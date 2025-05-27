@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BFE EnergieTanker</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            text-align: center;
+        }
+        .output-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            width: 80%;
+            max-width: 600px;
+        }
+        .output-container h2 { /* Allgemeine Anpassung für beide h2 */
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 15px; /* Etwas mehr Abstand nach unten */
+        }
+        #imageContainer {
+            margin-bottom: 20px;
+            border: 2px solid #ccc;
+            min-width: 150px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #e9e9e9;
+        }
+        #randomImage {
+            max-width: 100%;
+            max-height: 300px;
+            display: block;
+        }
+        /* NEU: CSS für den Beschreibungscontainer */
+        .description-container {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #eee;
+        }
+        /* NEU: CSS für den statischen Beschreibungstext */
+        #staticDescription {
+            font-size: 0.95em;
+            color: #333;
+            line-height: 1.6;
+            text-align: left; /* Besser für längere Texte */
+            margin: 0;
+        }
+        #randomNumberDisplay {
+            font-size: 28px;
+            font-weight: bold;
+            color: #007bff;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            min-width: 50px;
+            display: inline-block;
+        }
+        button {
+            padding: 12px 25px;
+            font-size: 18px;
+            color: white;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .hinweis {
+            margin-top: 25px;
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🏃💪BFE EnergieTanker<strong> 🏋️🧘</strong> &nbsp;</h1>
+
+    <div class="output-container">
+      <h2>Deine Übung</h2> <div id="imageContainer">
+          <img id="randomImage" src="" alt="Zufälliges Bild">
+      </div>
+      <div class="description-container">
+          <p id="staticDescription">
+              Führe die angezeigte Übung konzentriert und mit korrekter Form aus. Achte auf deine Atmung!
+              Dieser Text hier ist statisch und kann von dir beliebig angepasst werden.
+              Du könntest hier allgemeine Hinweise zum Training, Motivationstipps oder
+              Informationen zur korrekten Ausführung von Übungen im Allgemeinen geben.
+          </p>
+      </div>
+    </div>
+
+    <div class="output-container">
+        <h2>Wiederholungen</h2>
+        <div id="randomNumberDisplay"><strong>3</strong></div>
+    </div>
+
+    <button id="generateAllButton">➡️ Let's go ⬅️</button>
+
+    <p class="hinweis">Klicke auf den Button, um eine neue Fintessübung zu erhalten!</p>
+
+    <script>
+        // --- JavaScript-Teil ---
+
+        // --- BILDGENERATOR ---
+        const bilderListe = [
+            "bilder/bild1.png", "bilder/bild2.png", "bilder/bild3.png",
+            "bilder/bild4.png", "bilder/bild5.png", "bilder/bild6.png",
+            "bilder/bild7.png", "bilder/bild8.png", "bilder/bild9.png",
+            "bilder/bild10.png", "bilder/bild11.png", "bilder/bild12.png",
+            "bilder/bild13.png", "bilder/bild14.png", "bilder/bild15.png",
+            "bilder/bild16.png", "bilder/bild17.png", "bilder/bild18.png",
+            "bilder/bild19.png", "bilder/bild20.png", "bilder/bild21.png",
+            "bilder/bild22.png", "bilder/bild23.png", "bilder/bild24.png",
+        ];
+
+        const imageElement = document.getElementById('randomImage');
+        const imageContainer = document.getElementById('imageContainer');
+
+        function zeigeZufallsbild() {
+            if (bilderListe.length === 0) {
+                if (!imageContainer.contains(imageElement)) {
+                    imageContainer.innerHTML = '';
+                    imageContainer.appendChild(imageElement);
+                }
+                imageElement.src = "";
+                imageElement.alt = "Keine Bilder in der Liste.";
+                return;
+            }
+            if (!imageContainer.contains(imageElement)) {
+                imageContainer.innerHTML = '';
+                imageContainer.appendChild(imageElement);
+            }
+            const zufallsIndex = Math.floor(Math.random() * bilderListe.length);
+            imageElement.src = bilderListe[zufallsIndex];
+            imageElement.alt = "Zufälliges Bild " + (zufallsIndex + 1) + " von " + bilderListe.length;
+        }
+
+        // --- ZAHLENGENERATOR (2-10) ---
+        const randomNumberDisplayElement = document.getElementById('randomNumberDisplay');
+
+        function zeigeZufallszahl_2_bis_10() {
+            const min = 2;
+            const max = 10;
+            const zufallsZahl = Math.floor(Math.random() * (max - min + 1)) + min;
+            randomNumberDisplayElement.textContent = zufallsZahl;
+        }
+
+        // --- KOMBINIERTER BUTTON ---
+        const generateAllButton = document.getElementById('generateAllButton');
+
+        function generiereAllesNeu() {
+            zeigeZufallsbild();
+            zeigeZufallszahl_2_bis_10();
+        }
+
+        generateAllButton.addEventListener('click', generiereAllesNeu);
+
+        // --- INITIALES LADEN ---
+        window.addEventListener('load', function() {
+            generiereAllesNeu();
+        });
+    </script>
+
+</body>
+</html>
