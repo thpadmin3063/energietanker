@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BFE EnergieTanker</title>
+    <title>BFE Fitness</title>
     <style>
         body {
             font-family: sans-serif;
@@ -95,7 +95,7 @@
 </head>
 <body>
 
-    <h1>🏃💪BFE EnergieTanker<strong> 🏋️🧘</strong> &nbsp;</h1>
+    <h1>🏃💪BFE Fitness<strong> 🏋️🧘</strong> &nbsp;</h1>
 
     <div class="output-container">
       <h2>Deine Übung</h2> <div id="imageContainer">
@@ -131,8 +131,6 @@
             "bilder/bild10.png", "bilder/bild11.png", "bilder/bild12.png",
             "bilder/bild13.png", "bilder/bild14.png", "bilder/bild15.png",
             "bilder/bild16.png", "bilder/bild17.png", "bilder/bild18.png",
-            "bilder/bild19.png", "bilder/bild20.png", "bilder/bild21.png",
-            "bilder/bild22.png", "bilder/bild23.png", "bilder/bild24.png",
         ];
 
         const imageElement = document.getElementById('randomImage');
@@ -157,12 +155,12 @@
             imageElement.alt = "Zufälliges Bild " + (zufallsIndex + 1) + " von " + bilderListe.length;
         }
 
-        // --- ZAHLENGENERATOR (2-10) ---
+        // --- ZAHLENGENERATOR (5-30) ---
         const randomNumberDisplayElement = document.getElementById('randomNumberDisplay');
 
         function zeigeZufallszahl_2_bis_10() {
-            const min = 2;
-            const max = 10;
+            const min = 5;
+            const max = 30;
             const zufallsZahl = Math.floor(Math.random() * (max - min + 1)) + min;
             randomNumberDisplayElement.textContent = zufallsZahl;
         }
