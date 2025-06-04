@@ -10,11 +10,16 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* Inhalte oben ausrichten, um mehr Platz für Bilder zu lassen */
             min-height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
             text-align: center;
+            padding-bottom: 50px; /* Zusätzlicher Platz am unteren Rand */
+        }
+        h1 {
+            margin-top: 20px; /* Etwas Abstand nach oben */
+            margin-bottom: 30px; /* Mehr Abstand zum Container */
         }
         .output-container {
             background-color: #fff;
@@ -22,43 +27,60 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             margin-bottom: 25px;
-            width: 80%;
-            max-width: 600px;
+            width: 98%; /* Fast volle Breite des Viewports */
+            max-width: 1400px; /* Maximale Breite noch weiter erhöht */
+            box-sizing: border-box; /* Padding und Border in die Breite einbeziehen */
         }
-        .output-container h2 { /* Allgemeine Anpassung für beide h2 */
+        .output-container h2 {
             color: #333;
             margin-top: 0;
-            margin-bottom: 15px; /* Etwas mehr Abstand nach unten */
+            margin-bottom: 15px;
         }
-        #imageContainer {
-            margin-bottom: 20px;
+
+        /* Flexbox für die Bildcontainer */
+        .image-gallery {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 15px; /* Etwas kleinerer Abstand für mehr Platz pro Bild */
+            flex-wrap: wrap;
+        }
+
+        .image-item {
+            flex: 1;
+            /* Grundgrössen erhöht, um mehr Raum zu geben */
+            min-width: 30%; /* Mindestbreite 30% des Elterncontainers für jedes Bild */
+            max-width: 33%; /* Maximal 1/3 der Breite, um 3 Bilder nebeneinander zu halten */
+            aspect-ratio: 16 / 9; /* Beispiel: Verhältnis 16:9, kann angepasst werden */
             border: 2px solid #ccc;
-            min-width: 150px;
-            min-height: 150px;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: #e9e9e9;
+            border-radius: 5px;
+            overflow: hidden;
+            box-sizing: border-box; /* Padding und Border in die Breite/Höhe einbeziehen */
         }
-        #randomImage {
-            max-width: 100%;
-            max-height: 300px;
+        .image-item img {
+            width: 100%; /* Bild füllt die Breite des Containers */
+            height: 100%; /* Bild füllt die Höhe des Containers */
             display: block;
+            object-fit: contain; /* Bild skalieren, um in den Container zu passen ohne Beschnitt */
         }
-        /* NEU: CSS für den Beschreibungscontainer */
+
         .description-container {
             margin-top: 15px;
             padding: 10px;
             background-color: #f9f9f9;
             border-radius: 5px;
             border: 1px solid #eee;
+            display: none;
         }
-        /* NEU: CSS für den statischen Beschreibungstext */
         #staticDescription {
             font-size: 0.95em;
             color: #333;
             line-height: 1.6;
-            text-align: left; /* Besser für längere Texte */
+            text-align: left;
             margin: 0;
         }
         #randomNumberDisplay {
@@ -91,6 +113,20 @@
             font-size: 0.9em;
             color: #555;
         }
+
+        /* Responsive Anpassungen für kleinere Bildschirme */
+        @media (max-width: 768px) {
+            .image-gallery {
+                flex-direction: column;
+                align-items: center;
+            }
+            .image-item {
+                width: 95%; /* Auf kleinen Bildschirmen fast volle Breite */
+                min-width: unset;
+                max-width: unset; /* Keine maximale Breite, um flexibler zu sein */
+                aspect-ratio: 4 / 3; /* Für mobile Ansicht ein anderes Seitenverhältnis */
+            }
+        }
     </style>
 </head>
 <body>
@@ -98,14 +134,9 @@
     <h1>🏃💪BFE Fitness<strong> 🏋️🧘</strong> &nbsp;</h1>
 
     <div class="output-container">
-      <h2>Your Exercise</h2> <div id="imageContainer">
-          <img id="randomImage" src="" alt="Zufälliges Bild">
-      </div>
-      <div class="description-container">
-          <p id="staticDescription">
-            
-          </p>
-      </div>
+        <h2>Your Exercises</h2>
+        <div class="image-gallery" id="imageGallery">
+            </div>
     </div>
 
     <div class="output-container">
@@ -115,64 +146,84 @@
 
     <button id="generateAllButton">➡️ Let's go ⬅️</button>
 
-    <p class="hinweis">Click the button to get a new fitness exercise!!</p>
+    <p class="hinweis">Click the button to get new fitness exercises!</p>
 
     <script>
         // --- JavaScript-Teil ---
 
         // --- BILDGENERATOR ---
         const bilderListe = [
-            "bilder/bild1.png", "bilder/bild2.png", "bilder/bild3.png",
-            "bilder/bild4.png", "bilder/bild5.png", "bilder/bild6.png",
-            "bilder/bild7.png", "bilder/bild8.png", "bilder/bild9.png",
-            "bilder/bild10.png", "bilder/bild11.png", "bilder/bild12.png",
-            "bilder/bild13.png", "bilder/bild14.png", "bilder/bild15.png",
-            "bilder/bild16.png", "bilder/bild17.png", "bilder/bild18.png",
+            { src: "bilder/bild1.png", description: "Standard-Liegestütze" },
+            { src: "bilder/bild2.png", description: "Kniebeugen mit eigenem Körpergewicht" },
+            { src: "bilder/bild3.png", description: "Plank halten" },
+            { src: "bilder/bild4.png", description: "Ausfallschritte" },
+            { src: "bilder/bild5.png", description: "Mountain Climbers" },
+            { src: "bilder/bild6.png", description: "Burpees" },
+            { src: "bilder/bild7.png", description: "Russian Twists" },
+            { src: "bilder/bild8.png", description: "Leg Raises" },
+            { src: "bilder/bild9.png", description: "Jumping Jacks" },
+            { src: "bilder/bild10.png", description: "Triceps Dips (auf Stuhl)" },
+            { src: "bilder/bild11.png", description: "Wall Sit" },
+            { src: "bilder/bild12.png", description: "Bizeps-Curls mit Wasserflaschen" },
+            { src: "bilder/bild13.png", description: "Seilspringen (simuliert)" },
+            { src: "bilder/bild14.png", description: "High Knees" },
+            { src: "bilder/bild15.png", description: "Crunches" },
+            { src: "bilder/bild16.png", description: "Supermans" },
+            { src: "bilder/bild17.png", description: "Donkey Kicks" },
+            { src: "bilder/bild18.png", description: "V-Ups" },
         ];
 
-        const imageElement = document.getElementById('randomImage');
-        const imageContainer = document.getElementById('imageContainer');
+        const imageGalleryContainer = document.getElementById('imageGallery');
+        const NUM_IMAGES_TO_GENERATE = 3;
 
-        function zeigeZufallsbild() {
+        function zeigeZufallsbilder() {
+            imageGalleryContainer.innerHTML = '';
+
             if (bilderListe.length === 0) {
-                if (!imageContainer.contains(imageElement)) {
-                    imageContainer.innerHTML = '';
-                    imageContainer.appendChild(imageElement);
-                }
-                imageElement.src = "";
-                imageElement.alt = "Keine Bilder in der Liste.";
+                imageGalleryContainer.innerHTML = '<p>Keine Bilder in der Liste verfügbar.</p>';
                 return;
             }
-            if (!imageContainer.contains(imageElement)) {
-                imageContainer.innerHTML = '';
-                imageContainer.appendChild(imageElement);
+
+            const selectedIndices = new Set();
+
+            while (selectedIndices.size < NUM_IMAGES_TO_GENERATE && selectedIndices.size < bilderListe.length) {
+                const zufallsIndex = Math.floor(Math.random() * bilderListe.length);
+                selectedIndices.add(zufallsIndex);
             }
-            const zufallsIndex = Math.floor(Math.random() * bilderListe.length);
-            imageElement.src = bilderListe[zufallsIndex];
-            imageElement.alt = "Zufälliges Bild " + (zufallsIndex + 1) + " von " + bilderListe.length;
+
+            selectedIndices.forEach(index => {
+                const imageData = bilderListe[index];
+
+                const imageItemDiv = document.createElement('div');
+                imageItemDiv.classList.add('image-item');
+
+                const imgElement = document.createElement('img');
+                imgElement.src = imageData.src;
+                imgElement.alt = "Fitness Übung: " + (imageData.description || "Zufälliges Bild");
+
+                imageItemDiv.appendChild(imgElement);
+                imageGalleryContainer.appendChild(imageItemDiv);
+            });
         }
 
-        // --- ZAHLENGENERATOR (5-30) ---
         const randomNumberDisplayElement = document.getElementById('randomNumberDisplay');
 
-        function zeigeZufallszahl_2_bis_10() {
+        function zeigeZufallszahl_5_bis_30() {
             const min = 5;
             const max = 30;
             const zufallsZahl = Math.floor(Math.random() * (max - min + 1)) + min;
             randomNumberDisplayElement.textContent = zufallsZahl;
         }
 
-        // --- KOMBINIERTER BUTTON ---
         const generateAllButton = document.getElementById('generateAllButton');
 
         function generiereAllesNeu() {
-            zeigeZufallsbild();
-            zeigeZufallszahl_2_bis_10();
+            zeigeZufallsbilder();
+            zeigeZufallszahl_5_bis_30();
         }
 
         generateAllButton.addEventListener('click', generiereAllesNeu);
 
-        // --- INITIALES LADEN ---
         window.addEventListener('load', function() {
             generiereAllesNeu();
         });
